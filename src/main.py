@@ -8,9 +8,9 @@ import xml.etree.ElementTree as et
 from dadata import Dadata
 from sqlite3 import Error
 
-
 DADATA_API_KEY = '12f77383d2854aeb2bbb96ee3abed6f265ea27ee'
 DB_FILE = 'judicialsqlite.db'
+
 
 class DBCM:
     """Контекстный менеджер для БД."""
@@ -123,7 +123,7 @@ class DBCM:
                 FOREIGN KEY (bank_id) REFERENCES bank(id)
             )
             '''
-       )
+        )
 
         # Денежные обязательства
         cursor.execute(
@@ -251,7 +251,7 @@ def get_message_data(message, db_connection):
         )
     ).fetchone()[0]
     finish_reason = message.find('FinishReason').text if (
-        message.find('FinishReason') is not None) else None
+            message.find('FinishReason') is not None) else None
     return (
         message_id,
         number,
@@ -277,14 +277,14 @@ def get_message_bank_data(bank, parent_map, db_connection):
         WHERE name LIKE ? AND bik = ?
         ''',
         (bank.find('Name').text, bank.find('Bik').text)
-    ).fetchone()[0] if bank.find('Bik') is not None else\
-    db_connection.execute(
-        '''
-        SELECT id FROM bank
-        WHERE name LIKE ? AND bik IS NULL
-        ''',
-        (bank.find('Name').text,)
-    ).fetchone()[0]
+    ).fetchone()[0] if bank.find('Bik') is not None else \
+        db_connection.execute(
+            '''
+            SELECT id FROM bank
+            WHERE name LIKE ? AND bik IS NULL
+            ''',
+            (bank.find('Name').text,)
+        ).fetchone()[0]
     return message_id, bank_id
 
 
@@ -314,7 +314,7 @@ def get_payment_data(payment, parent_map, db_connection):
         (parent_map[parent_map[parent_map[payment]]].find('Id').text,)
     ).fetchone()[0]
     is_from_enterpreneurship = (
-        parent_map[parent_map[payment]].tag == 'CreditorsFromEntrepreneurship'
+            parent_map[parent_map[payment]].tag == 'CreditorsFromEntrepreneurship'
     )
     return (
         payment.find('Name').text,
